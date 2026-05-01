@@ -584,13 +584,13 @@ export default function GamePage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-[#e4e3e0] font-sans selection:bg-cyan-500/30 overflow-x-hidden p-4 md:p-8">
+    <main className="min-h-screen bg-black text-[#e4e3e0] font-sans selection:bg-cyan-500/30 overflow-x-hidden p-3 md:p-8">
       
       {/* Header */}
-      <header className="max-w-7xl mx-auto mb-12 text-center relative">
+      <header className="max-w-7xl mx-auto mb-6 md:mb-12 text-center relative px-2">
         <button 
           onClick={quitToMenu}
-          className="absolute left-0 top-0 text-[10px] font-mono uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity flex items-center gap-2"
+          className="md:absolute left-0 top-0 text-[10px] font-mono uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity flex items-center justify-center gap-2 mb-4 md:mb-0"
         >
           <XCircle size={14} /> Sair do Jogo
         </button>
@@ -598,26 +598,26 @@ export default function GamePage() {
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="inline-flex items-center gap-3 px-4 py-1 mb-4 border border-[#e4e3e0]/20 rounded-full text-[10px] uppercase tracking-[0.2em] font-mono text-[#e4e3e0]/60"
+          className="inline-flex items-center gap-3 px-3 py-1 mb-4 border border-[#e4e3e0]/20 rounded-full text-[9px] md:text-[10px] uppercase tracking-[0.2em] font-mono text-[#e4e3e0]/60"
         >
           {gameMode === 'versus' ? <Swords size={12} className="text-pink-400" /> : <User size={12} className="text-cyan-400" />}
-          {gameMode === 'versus' ? "Modo Competitivo (Turnos)" : "Modo Prática Solo"}
+          {gameMode === 'versus' ? "Modo Competitivo" : "Modo Prática Solo"}
           <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
         </motion.div>
         
         <motion.h1 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-5xl md:text-7xl font-mono font-bold tracking-tighter uppercase italic leading-[0.85] mb-2"
+          className="text-3xl sm:text-4xl md:text-7xl font-mono font-bold tracking-tighter uppercase italic leading-[0.85] mb-2"
         >
           Top 10 Cultural <span className={gameMode === 'versus' ? "text-pink-400" : "text-cyan-400"}>{gameMode === 'versus' ? "Versus" : "Solo"}</span>
         </motion.h1>
-        <p className="text-[#e4e3e0]/50 font-mono text-sm tracking-wide">{currentList.titulo} • {currentList.subtitulo}</p>
+        <p className="text-[#e4e3e0]/50 font-mono text-[10px] md:text-sm tracking-wide px-4">{currentList.titulo} • {currentList.subtitulo}</p>
       </header>
 
       {/* Turn Indicator (Versus only) */}
       {gameMode === 'versus' && (
-        <div className="max-w-7xl mx-auto mb-8 flex justify-center">
+        <div className="max-w-7xl mx-auto mb-6 md:mb-8 flex justify-center px-4">
            <AnimatePresence mode="wait">
              <motion.div 
                key={currentTurn}
@@ -625,13 +625,13 @@ export default function GamePage() {
                animate={{ opacity: 1, y: 0 }}
                exit={{ opacity: 0, y: -10 }}
                className={cn(
-                 "px-8 py-3 rounded-full font-mono text-xs font-bold uppercase tracking-[0.3em] flex items-center gap-4 border shadow-[0_0_30px_rgba(0,0,0,1)]",
+                 "px-4 md:px-8 py-2 md:py-3 rounded-full font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] flex items-center gap-3 md:gap-4 border shadow-[0_0_30px_rgba(0,0,0,1)]",
                  currentTurn === 1 ? "bg-cyan-500 text-black border-cyan-400" : "bg-pink-500 text-black border-pink-400"
                )}
              >
-                <div className="w-2 h-2 rounded-full bg-black animate-pulse" />
+                <div className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
                 Vez do Jogador {currentTurn}
-                <div className="w-2 h-2 rounded-full bg-black animate-pulse" />
+                <div className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
              </motion.div>
            </AnimatePresence>
         </div>
@@ -639,7 +639,7 @@ export default function GamePage() {
 
       {/* Main Layout Grid */}
       <div className={cn(
-        "max-w-7xl mx-auto grid gap-8 items-start",
+        "max-w-7xl mx-auto grid gap-4 md:gap-8 items-start",
         gameMode === 'versus' ? "grid-cols-1 lg:grid-cols-[1fr_2fr_1fr]" : "grid-cols-1 lg:grid-cols-[1fr_2fr]"
       )}>
         
@@ -690,38 +690,38 @@ export default function GamePage() {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 px-6 flex justify-between items-center">
+                <div className="flex-1 px-4 md:px-6 flex justify-between items-center overflow-hidden">
                   <AnimatePresence mode="wait">
                     {revealedBy ? (
                       <motion.div 
                         key="revealed"
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        className="flex flex-col"
+                        className="flex flex-col min-w-0"
                       >
-                        <span className="font-mono font-bold text-lg uppercase tracking-tight">{item?.nome}</span>
-                        <span className="text-[10px] font-mono tracking-widest opacity-40 uppercase">
-                          {gameMode === 'versus' ? `Descoberto por P${revealedBy}` : 'Item Descoberto'} • +{11 - pos} Pontos
+                        <span className="font-mono font-bold text-sm md:text-lg uppercase tracking-tight truncate">{item?.nome}</span>
+                        <span className="text-[8px] md:text-[10px] font-mono tracking-widest opacity-40 uppercase truncate">
+                          {gameMode === 'versus' ? `P${revealedBy}` : 'Descoberto'} • +{11 - pos} Pts
                         </span>
                       </motion.div>
                     ) : (
                       <motion.div 
                         key="hidden"
-                        className="flex items-center gap-4 transition-all"
+                        className="flex items-center gap-2 md:gap-4 transition-all w-full"
                       >
-                        <div className="flex items-center gap-2 opacity-20">
-                          <div className="w-4 h-1 bg-[#e4e3e0]/30 rounded-full" />
-                          <div className="w-24 h-1 bg-[#e4e3e0]/30 rounded-full" />
+                        <div className="flex items-center gap-2 opacity-20 shrink-0">
+                          <div className="w-3 md:w-4 h-1 bg-[#e4e3e0]/30 rounded-full" />
+                          <div className="w-12 md:w-24 h-1 bg-[#e4e3e0]/30 rounded-full" />
                         </div>
                         
                         {revealedHints.includes(pos) && item?.dica && (
                           <motion.div 
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded text-[10px] font-mono text-yellow-500 italic max-w-[200px] truncate"
+                            className="px-2 md:px-3 py-0.5 md:py-1 bg-yellow-500/10 border border-yellow-500/30 rounded text-[8px] md:text-[10px] font-mono text-yellow-500 italic truncate flex-1 min-w-0"
                             title={item.dica}
                           >
-                            💡 DICA: {item.dica}
+                            💡 {item.dica}
                           </motion.div>
                         )}
                       </motion.div>
@@ -730,7 +730,7 @@ export default function GamePage() {
                   
                   {/* Point Value Badge */}
                   <div className={cn(
-                    "font-mono text-xs p-1 tracking-tighter border border-[#e4e3e0]/10 rounded",
+                    "font-mono text-[9px] md:text-xs p-1 tracking-tighter border border-[#e4e3e0]/10 rounded hidden sm:block",
                     !revealedBy && "opacity-10"
                   )}>
                     VAL: {11 - pos}
@@ -769,17 +769,17 @@ export default function GamePage() {
       </div>
 
       {/* Global Controls */}
-      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-[#e4e3e0]/10 flex flex-wrap gap-4 justify-center">
+      <div className="max-w-7xl mx-auto mt-8 md:mt-16 pt-8 border-t border-[#e4e3e0]/10 flex flex-wrap gap-3 md:gap-4 justify-center px-4 mb-8">
         <button 
           onClick={resetGame}
-          className="flex items-center gap-3 px-6 py-3 border border-[#e4e3e0]/20 hover:bg-[#e4e3e0]/5 transition-colors font-mono uppercase tracking-widest text-xs"
+          className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-4 md:px-6 py-3 border border-[#e4e3e0]/20 hover:bg-[#e4e3e0]/5 transition-colors font-mono uppercase tracking-widest text-[10px] md:text-xs"
         >
           <RefreshCw size={14} />
-          Reiniciar Partida
+          Reiniciar
         </button>
         <button 
           onClick={nextList}
-          className="flex items-center gap-3 px-6 py-3 bg-[#e4e3e0] text-black hover:bg-white transition-colors font-mono uppercase font-bold tracking-widest text-xs"
+          className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-4 md:px-6 py-3 bg-[#e4e3e0] text-black hover:bg-white transition-colors font-mono uppercase font-bold tracking-widest text-[10px] md:text-xs"
         >
           <Layers size={14} />
           Trocar Lista
@@ -878,7 +878,7 @@ function PlayerArea({
 
   return (
     <div className={cn(
-      "space-y-6 p-8 border bg-[#0a0a0a] transition-all relative overflow-hidden",
+      "space-y-4 md:space-y-6 p-4 md:p-8 border bg-[#0a0a0a] transition-all relative overflow-hidden",
       borderColor,
       (player.isBlocked || !isTurn) && "opacity-50 grayscale"
     )}>
@@ -888,11 +888,11 @@ function PlayerArea({
       )}
 
       {/* Label & Status */}
-      <div className="flex justify-between items-end border-b border-[#e4e3e0]/10 pb-4">
+      <div className="flex justify-between items-end border-b border-[#e4e3e0]/10 pb-3 md:pb-4">
         <div>
-          <h3 className={cn("font-mono text-[10px] tracking-[0.3em] font-bold", accentColor)}>{label}</h3>
-          <div className="text-4xl font-mono font-bold tracking-tighter mt-1">{player.score}</div>
-          <div className="text-[9px] font-mono opacity-30 uppercase tracking-widest mt-0.5">Pontuação Real</div>
+          <h3 className={cn("font-mono text-[9px] md:text-[10px] tracking-[0.2em] md:tracking-[0.3em] font-bold", accentColor)}>{label}</h3>
+          <div className="text-3xl md:text-4xl font-mono font-bold tracking-tighter mt-1">{player.score}</div>
+          <div className="text-[8px] md:text-[9px] font-mono opacity-30 uppercase tracking-widest mt-0.5">Pontos</div>
         </div>
         <div className="flex flex-col items-end gap-1">
           <div className="flex gap-1.5">
@@ -939,9 +939,9 @@ function PlayerArea({
             disabled={player.isBlocked || gameState === 'finished' || !isTurn}
             value={player.input}
             onChange={(e) => setPlayer(prev => ({ ...prev, input: e.target.value }))}
-            placeholder={player.isBlocked ? "BLOQUEADO" : !isTurn ? "AGUARDANDO..." : "Sua aposta?"}
+            placeholder={player.isBlocked ? "BLOQUEADO" : !isTurn ? "TURNO DO ADVERSÁRIO" : "Sua aposta?"}
             className={cn(
-              "w-full bg-[#141414] border border-[#e4e3e0]/10 p-4 font-mono text-sm tracking-wide focus:outline-none focus:border-[#e4e3e0]/40 transition-all",
+              "w-full bg-[#141414] border border-[#e4e3e0]/10 p-3 md:p-4 font-mono text-xs md:text-sm tracking-wide focus:outline-none focus:border-[#e4e3e0]/40 transition-all uppercase placeholder:normal-case",
               (player.isBlocked || !isTurn) && "cursor-not-allowed opacity-50 bg-[#050505]"
             )}
           />

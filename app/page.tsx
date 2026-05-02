@@ -253,7 +253,8 @@ export default function GamePage() {
 
     if (!fromRemote && socket) {
       if (isOnline) {
-        socket.emit('gameEvent', { roomCode, event: { type: 'hint', playerId, pos } });
+        // When online, we only broadcast that a hint was used, not the position
+        socket.emit('gameEvent', { roomCode, event: { type: 'hint_used', playerId } });
       } else {
         socket.emit('resposta', { type: 'hint', playerId, pos });
       }
@@ -264,6 +265,13 @@ export default function GamePage() {
     const hintLimit = gameMode === 'versus' ? 1 : 3;
 
     if (player.hintsUsed >= hintLimit || player.isBlocked) return;
+
+    // If it's a remote hint used event, we only update the counter, we don't reveal anything
+    if (isOnline && fromRemote) {
+      setPlayer(prev => ({ ...prev, hintsUsed: prev.hintsUsed + 1 }));
+      playSound('hint');
+      return;
+    }
 
     if (pos !== undefined) {
       if (revealed[pos] || revealedHints.includes(pos)) return;
@@ -442,6 +450,8 @@ export default function GamePage() {
         handleGuessRef.current(event.playerId, event.value, true);
       } else if (event.type === 'hint') {
         handleHintRef.current(event.playerId, event.pos, true);
+      } else if (event.type === 'hint_used') {
+        handleHintRef.current(event.playerId, undefined, true);
       } else if (event.type === 'reset') {
         resetGameRef.current(true);
       }
@@ -581,7 +591,20 @@ export default function GamePage() {
                 exit={{ opacity: 0, y: 20 }}
                 className="max-w-md mx-auto mt-8 p-8 border border-[#e4e3e0]/10 bg-[#0a0a0a] space-y-6"
               >
-                <h3 className="text-xl font-mono font-bold uppercase text-cyan-400">Sala Online</h3>
+                <div className="flex justify-between items-center">
+                  <h3 className="text-xl font-mono font-bold uppercase text-cyan-400">Sala Online</h3>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => {
+                        const code = Math.random().toString(36).substring(2, 6).toUpperCase();
+                        setRoomCode(code);
+                      }}
+                      className="text-[8px] border border-cyan-500/30 px-2 py-1 hover:bg-cyan-500/10 transition-colors uppercase font-mono"
+                    >
+                      Gerar Código
+                    </button>
+                  </div>
+                </div>
                 
                 <div className="space-y-4 text-left">
                   <div className="space-y-2">
@@ -601,7 +624,7 @@ export default function GamePage() {
                       className="w-full bg-black border border-white/10 p-4 text-sm focus:border-cyan-400 outline-none uppercase"
                       value={roomCode}
                       onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                      placeholder="EX: TOP10"
+                      placeholder="EX: ABCD"
                     />
                   </div>
                 </div>
@@ -624,8 +647,14 @@ export default function GamePage() {
                     }}
                     className="flex-2 py-3 bg-cyan-500 text-black font-mono font-bold uppercase text-[10px] hover:bg-cyan-400 disabled:opacity-50"
                   >
-                    Entrar na Sala
+                    {roomData ? "Entrar na Sala" : "Criar / Entrar"}
                   </button>
+                </div>
+
+                <div className="pt-4 border-t border-white/5">
+                  <p className="text-[9px] font-mono opacity-30 text-center uppercase leading-relaxed">
+                    Para jogar com um amigo, envie o código para ele. O jogo iniciará assim que ambos entrarem com o mesmo código.
+                  </p>
                 </div>
               </motion.div>
             )}

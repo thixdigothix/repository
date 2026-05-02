@@ -35,6 +35,86 @@ const LISTAS_POP: JogoLista[] = [
       { posicao: 9, nome: "Lupin", variantes: ["Lupan"], dica: "Ladrão francês" },
       { posicao: 10, nome: "Sex Education", variantes: ["Sex Education"], dica: "Comédia adolescente" },
     ]
+  },
+  {
+    titulo: "Top 10 Países com Maior IDH",
+    subtitulo: "Índice de Desenvolvimento Humano Global",
+    respostas: [
+      { posicao: 1, nome: "Suíça", variantes: ["Suica", "Switzerland"], dica: "Sede de diversas organizações internacionais na Europa" },
+      { posicao: 2, nome: "Noruega", variantes: ["Norway"], dica: "Grande fundo soberano vindo de recursos naturais" },
+      { posicao: 3, nome: "Islândia", variantes: ["Islandia", "Iceland"], dica: "Baixa população e alta produção de energia geotérmica" },
+      { posicao: 4, nome: "Hong Kong", variantes: ["Hong Kong SAR"], dica: "Importante centro financeiro asiático com status especial" },
+      { posicao: 5, nome: "Austrália", variantes: ["Australia"], dica: "Economia desenvolvida baseada também em mineração" },
+      { posicao: 6, nome: "Dinamarca", variantes: ["Denmark"], dica: "Monarquia europeia com alto índice de bem-estar social" },
+      { posicao: 7, nome: "Suécia", variantes: ["Suecia", "Sweden"], dica: "País escandinavo com forte estado de bem-estar" },
+      { posicao: 8, nome: "Irlanda", variantes: ["Ireland"], dica: "Sede europeia de várias multinacionais de tecnologia" },
+      { posicao: 9, nome: "Alemanha", variantes: ["Germany"], dica: "Potência industrial e exportadora da Europa" },
+      { posicao: 10, nome: "Países Baixos", variantes: ["Paises Baixos", "Netherlands", "Holanda"], dica: "Grande hub logístico com porto de Rotterdam" },
+    ]
+  },
+  {
+    titulo: "Top 10 Brasileiros Mais Seguidos no Instagram",
+    subtitulo: "Personalidades com maior alcance digital",
+    respostas: [
+      { posicao: 1, nome: "Neymar", variantes: ["Neymar Jr", "Neymar Junior"], dica: "Jogador brasileiro com passagem pelo Barcelona e PSG" },
+      { posicao: 2, nome: "Ronaldinho Gaúcho", variantes: ["Ronaldinho", "R10"], dica: "Ex-jogador eleito melhor do mundo nos anos 2000" },
+      { posicao: 3, nome: "Marcelo", variantes: ["Marcelo Vieira", "Marcelo Jr"], dica: "Lateral histórico do Real Madrid" },
+      { posicao: 4, nome: "Anitta", variantes: ["Larissa de Macedo Machado"], dica: "Cantora pop brasileira com carreira internacional" },
+      { posicao: 5, nome: "Vinicius Jr", variantes: ["Vini Jr", "Vinicius Junior"], dica: "Atacante brasileiro destaque no Real Madrid" },
+      { posicao: 6, nome: "Whindersson Nunes", variantes: ["Whindersson", "Whinderson"], dica: "Criador de conteúdo que começou no YouTube" },
+      { posicao: 7, nome: "Tatá Werneck", variantes: ["Tata Werneck"], dica: "Atriz e apresentadora brasileira" },
+      { posicao: 8, nome: "Virginia Fonseca", variantes: ["Virginia"], dica: "Influenciadora e empresária digital" },
+      { posicao: 9, nome: "Larissa Manoela", variantes: ["Larissa"], dica: "Atriz revelada em novelas infantis" },
+      { posicao: 10, nome: "Maisa", variantes: ["Maisa Silva"], dica: "Apresentadora e atriz jovem brasileira" },
+    ]
+  },
+  {
+    titulo: "Músicas da Sabrina Carpenter mais vistas no Youtube",
+    subtitulo: "Hits da artista com maior número de visualizações",
+    respostas: [
+      { posicao: 1, nome: "Espresso", variantes: ["Expresso", "Espreso"], dica: "Café" },
+      { posicao: 2, nome: "Please Please Please", variantes: ["Please", "Please Please"], dica: "Por obsequio" },
+      { posicao: 3, nome: "Thumbs", variantes: ["Thumb", "Tumbs"], dica: "Dedo" },
+      { posicao: 4, nome: "Taste", variantes: ["Tastes"], dica: "Jenna" },
+      { posicao: 5, nome: "Manchild", variantes: ["Manchield"], dica: "And they are pigs" },
+      { posicao: 6, nome: "Feather", variantes: ["Fether", "Feater"], dica: "Catolicismo" },
+      { posicao: 7, nome: "Nonsense", variantes: ["Non sense", "No sense", "Nosense"], dica: "Aos que se referem" },
+      { posicao: 8, nome: "Eyes Wide Open", variantes: ["Eyes", "Eyes wide open", "eye wide open", "eyes open"], dica: "Olhos" },
+      { posicao: 9, nome: "Tears", variantes: ["Tear"], dica: "Chorar" },
+      { posicao: 10, nome: "Can't Blame a Girl", variantes: ["Cant Blame a Girl", "Blame a Girl"], dica: "12 anos atrás" },
+    ]
+  },
+  {
+    titulo: "Bairros mais populosos de Teresópolis",
+    subtitulo: "Bairros oficiais da cidade",
+    respostas: [
+      { posicao: 1, nome: "São Pedro", variantes: ["Vidigueira", "Sao Pedro"], dica: "Tiro de Guerra" },
+      { posicao: 2, nome: "Várzea", variantes: ["Varzea", "Varsea"], dica: "Rolés" },
+      { posicao: 3, nome: "Barra do Imbúi", variantes: ["Barra", "Barra do Imbui"], dica: "Corte da..." },
+      { posicao: 4, nome: "Meudon", variantes: ["Meudom", "Meudon"], dica: "Meu atacadista" },
+      { posicao: 5, nome: "Quinta Lebrão", variantes: ["Quinta Lebrao", "Quinta Lebron"], dica: "Quarta..." },
+      { posicao: 6, nome: "Alto", variantes: ["Auto"], dica: "Feira" },
+      { posicao: 7, nome: "Granja Florestal", variantes: ["Granja"], dica: "Pedra da Tartartuga" },
+      { posicao: 8, nome: "Jardim Meudon", variantes: ["Jardim Meudom"], dica: "Garden" },
+      { posicao: 9, nome: "Tijuca", variantes: ["Tiguca"], dica: "Alterdata" },
+      { posicao: 10, nome: "Agriões", variantes: ["Agrioes"], dica: "Sylvio Neto" },
+    ]
+  },
+  {
+    titulo: "Os 10 artistas favoritos de Thiago Alencar",
+    subtitulo: "Um tema feito em maio de 2025",
+    respostas: [
+      { posicao: 1, nome: "The Beatles", variantes: ["Beatles"], dica: "Goats" },
+      { posicao: 2, nome: "Yun Li", variantes: ["Yung Lixo", "Yun Lixo"], dica: "Todos odeiam mas eu amo" },
+      { posicao: 3, nome: "Tyler, The Creator", variantes: ["Tyler The Creator", "Tyler", "Tyler the cretor"], dica: "Quera geta quis" },
+      { posicao: 4, nome: "Pink Floyd", variantes: ["Pink Floid"], dica: "Dark side" },
+      { posicao: 5, nome: "Bob Dylan", variantes: ["Bob Dilan", "Bob"], dica: "Folk e gaita" },
+      { posicao: 6, nome: "Lô Borges", variantes: ["Lo Borges"], dica: "Clube da esquina" },
+      { posicao: 7, nome: "One Direction", variantes: ["1D", "One Diretion", "One D"], dica: "Valor sentimental" },
+      { posicao: 8, nome: "Tears For Fears", variantes: ["ters For fears", "Tears for fers"], dica: "Evebody wants to rule the world" },
+      { posicao: 9, nome: "Clairo", variantes: ["Claire", "Claro"], dica: "Bedroom pop" },
+      { posicao: 10, nome: "Kanye West", variantes: ["Ye", "Kanye"], dica: "Work hard make better" },
+    ]
   }
 ];
 
@@ -142,6 +222,7 @@ export default function GamePage() {
   const [currentTurn, setCurrentTurn] = useState<1 | 2>(1);
   const [listasCustom, setListasCustom] = useState<JogoLista[]>(LISTAS_POP);
   const [listIndex, setListIndex] = useState(0);
+  const [isListSelectorOpen, setIsListSelectorOpen] = useState(false);
   const [revealed, setRevealed] = useState<{ [key: number]: number }>({}); // pos: playerId
   const [revealedHints, setRevealedHints] = useState<number[]>([]); // New: array of positions with hints revealed
   const [p1, setP1] = useState<PlayerState>({ score: 0, errors: 0, hintsUsed: 0, input: '', isBlocked: false, lastFeedback: null });
@@ -154,7 +235,7 @@ export default function GamePage() {
   const currentList = listasCustom[listIndex] || { titulo: "Sem Lista", subtitulo: "Crie uma lista no Modo Dev", respostas: [] };
 
   // Logic
-  const handleHint = (playerId: 1 | 2) => {
+  const handleHint = (playerId: 1 | 2, pos?: number) => {
     if (gameState === 'finished') return;
     if (gameMode === 'versus' && currentTurn !== playerId) return;
 
@@ -164,7 +245,16 @@ export default function GamePage() {
 
     if (player.hintsUsed >= hintLimit || player.isBlocked) return;
 
-    // Find a random unrevealed item to give a hint for
+    if (pos !== undefined) {
+      if (revealed[pos] || revealedHints.includes(pos)) return;
+      setRevealedHints(prev => [...prev, pos]);
+      setPlayer(prev => ({ ...prev, hintsUsed: prev.hintsUsed + 1, lastFeedback: 'hint' }));
+      playSound('hint');
+      setTimeout(() => setPlayer(prev => ({ ...prev, lastFeedback: null })), 800);
+      return;
+    }
+
+    // Fallback: Find a random unrevealed item to give a hint for
     const unrevealedItems = currentList.respostas.filter(item => !revealed[item.posicao] && !revealedHints.includes(item.posicao));
     
     if (unrevealedItems.length > 0) {
@@ -217,7 +307,7 @@ export default function GamePage() {
         setPlayer(prev => ({ ...prev, input: '' }));
       } else {
         // Success!
-        const points = 11 - item.posicao;
+        const points = item.posicao; // Position 10 = 10 pts, Position 1 = 1 pt
         playSound('correct');
         const newRevealed = { ...revealed, [item.posicao]: playerId };
         setRevealed(newRevealed);
@@ -701,7 +791,7 @@ export default function GamePage() {
                       >
                         <span className="font-mono font-bold text-sm md:text-lg uppercase tracking-tight truncate">{item?.nome}</span>
                         <span className="text-[8px] md:text-[10px] font-mono tracking-widest opacity-40 uppercase truncate">
-                          {gameMode === 'versus' ? `P${revealedBy}` : 'Descoberto'} • +{11 - pos} Pts
+                          {gameMode === 'versus' ? `P${revealedBy}` : 'Descoberto'} • +{pos} Pts
                         </span>
                       </motion.div>
                     ) : (
@@ -714,7 +804,7 @@ export default function GamePage() {
                           <div className="w-12 md:w-24 h-1 bg-[#e4e3e0]/30 rounded-full" />
                         </div>
                         
-                        {revealedHints.includes(pos) && item?.dica && (
+                        {revealedHints.includes(pos) && item?.dica ? (
                           <motion.div 
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -723,6 +813,14 @@ export default function GamePage() {
                           >
                             💡 {item.dica}
                           </motion.div>
+                        ) : (
+                          <button 
+                            onClick={() => handleHint(currentTurn, pos)}
+                            disabled={gameState === 'finished' || (gameMode === 'versus' ? (currentTurn === 1 ? p1.hintsUsed >= 1 : p2.hintsUsed >= 1) : p1.hintsUsed >= 3)}
+                            className="hidden group-hover:flex items-center gap-1.5 px-2 py-0.5 border border-yellow-500/30 text-yellow-500/60 hover:text-yellow-500 hover:border-yellow-500 transition-all font-mono text-[9px] uppercase tracking-widest rounded"
+                          >
+                            <AlertTriangle size={10} /> DICA
+                          </button>
                         )}
                       </motion.div>
                     )}
@@ -733,7 +831,7 @@ export default function GamePage() {
                     "font-mono text-[9px] md:text-xs p-1 tracking-tighter border border-[#e4e3e0]/10 rounded hidden sm:block",
                     !revealedBy && "opacity-10"
                   )}>
-                    VAL: {11 - pos}
+                    VAL: {pos}
                   </div>
                 </div>
 
@@ -778,13 +876,65 @@ export default function GamePage() {
           Reiniciar
         </button>
         <button 
-          onClick={nextList}
+          onClick={() => setIsListSelectorOpen(true)}
           className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-4 md:px-6 py-3 bg-[#e4e3e0] text-black hover:bg-white transition-colors font-mono uppercase font-bold tracking-widest text-[10px] md:text-xs"
         >
           <Layers size={14} />
           Trocar Lista
         </button>
       </div>
+
+      {/* List Selection Modal */}
+      <AnimatePresence>
+        {isListSelectorOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="max-w-2xl w-full bg-[#141414] border border-[#e4e3e0]/10 p-8 space-y-6 relative"
+            >
+              <button 
+                onClick={() => setIsListSelectorOpen(false)}
+                className="absolute top-4 right-4 text-[#e4e3e0]/40 hover:text-white transition-colors"
+              >
+                <XCircle size={20} />
+              </button>
+
+              <div className="space-y-1">
+                <h2 className="text-xl font-mono font-bold uppercase tracking-tight">Escolha uma Lista</h2>
+                <p className="text-[10px] font-mono opacity-40 uppercase tracking-widest">Selecione o tema para a próxima partida</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                {listasCustom.map((lista, idx) => (
+                  <button 
+                    key={idx}
+                    onClick={() => {
+                      setListIndex(idx);
+                      setIsListSelectorOpen(false);
+                      resetGame();
+                    }}
+                    className={cn(
+                      "text-left p-4 border transition-all space-y-1 group",
+                      listIndex === idx 
+                        ? "border-cyan-500 bg-cyan-500/5" 
+                        : "border-[#e4e3e0]/10 bg-[#0a0a0a] hover:border-[#e4e3e0]/30"
+                    )}
+                  >
+                    <h3 className="text-sm font-mono font-bold uppercase group-hover:text-cyan-400 transition-colors">{lista.titulo}</h3>
+                    <p className="text-[9px] font-mono opacity-40 uppercase truncate">{lista.subtitulo}</p>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Game Over Overlay */}
       <AnimatePresence>

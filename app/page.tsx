@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Trophy, XCircle, RefreshCw, Layers, Swords, User, AlertTriangle, Settings, Plus, Trash2, Download, Edit2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -246,7 +246,7 @@ export default function GamePage() {
   const currentList = listasCustom[listIndex] || { titulo: "Sem Lista", subtitulo: "Crie uma lista no Modo Dev", respostas: [] };
 
   // Logic
-  const handleHint = (playerId: 1 | 2, pos?: number, fromRemote = false) => {
+  const handleHint = useCallback((playerId: 1 | 2, pos?: number, fromRemote = false) => {
     if (gameState === 'finished') return;
     if (gameMode === 'versus' && currentTurn !== playerId) return;
     if (isOnline && !fromRemote && playerId !== myRole) return;
@@ -260,11 +260,8 @@ export default function GamePage() {
       }
     }
 
-    const player = playerId === 1 ? p1 : p2;
     const setPlayer = playerId === 1 ? setP1 : setP2;
     const hintLimit = gameMode === 'versus' ? 1 : 3;
-
-    if (player.hintsUsed >= hintLimit || player.isBlocked) return;
 
     // If it's a remote hint used event, we only update the counter, we don't reveal anything
     if (isOnline && fromRemote) {
@@ -272,6 +269,11 @@ export default function GamePage() {
       playSound('hint');
       return;
     }
+
+    // We need to check hintsUsed from the current state, but using functional update is better
+    // However, for the initial check of hintLimit/isBlocked, we use the closure values
+    const player = playerId === 1 ? p1 : p2;
+    if (player.hintsUsed >= hintLimit || player.isBlocked) return;
 
     if (pos !== undefined) {
       if (revealed[pos] || revealedHints.includes(pos)) return;
@@ -292,9 +294,9 @@ export default function GamePage() {
       playSound('hint');
       setTimeout(() => setPlayer(prev => ({ ...prev, lastFeedback: null })), 800);
     }
-  };
+  }, [gameState, gameMode, currentTurn, isOnline, myRole, roomCode, currentList, revealed, revealedHints, p1, p2]);
 
-  const handleGuess = (playerId: 1 | 2, value: string, fromRemote = false) => {
+  const handleGuess = useCallback((playerId: 1 | 2, value: string, fromRemote = false) => {
     if (gameState === 'finished') return;
     if (gameMode === 'versus' && currentTurn !== playerId) return;
     if (isOnline && !fromRemote && playerId !== myRole) return;
@@ -306,8 +308,11 @@ export default function GamePage() {
         socket.emit('resposta', { type: 'guess', playerId, value });
       }
     }
-    const player = playerId === 1 ? p1 : p2;
+    
     const setPlayer = playerId === 1 ? setP1 : setP2;
+    // We need current player state to check if blocked, but it's okay to use closure here
+    // since we use functional updates for the actual changes.
+    const player = playerId === 1 ? p1 : p2;
     const otherPlayer = playerId === 1 ? p2 : p1;
 
     if (player.isBlocked) return;
@@ -329,6 +334,7 @@ export default function GamePage() {
     const finishTurn = (isCorrect: boolean) => {
       if (gameMode === 'versus') {
         // Switch turn if other player is not blocked
+        // Since we are inside handleGuess, we use closures of p1/p2 or check their current state
         if (!otherPlayer.isBlocked) {
           setCurrentTurn(playerId === 1 ? 2 : 1);
         }
@@ -368,38 +374,39 @@ export default function GamePage() {
     } else {
       // Error
       playSound('wrong');
-      const newErrors = player.errors + 1;
-      const isBlocked = newErrors >= 3;
       
-      setPlayer(prev => ({ 
-        ...prev, 
-        errors: newErrors, 
-        input: '', 
-        isBlocked: isBlocked,
-        lastFeedback: 'wrong'
-      }));
+      setPlayer(prev => {
+        const newErrors = prev.errors + 1;
+        const isBlocked = newErrors >= 3;
+        return { 
+          ...prev, 
+          errors: newErrors, 
+          input: '', 
+          isBlocked: isBlocked,
+          lastFeedback: 'wrong'
+        };
+      });
 
-      // Check if game over
+      // Turn switching
+      finishTurn(false);
+
+      // Check if game over (both blocked)
+      // Since we just updated one, we check if the other IS ALREADY blocked
       if (gameMode === 'solo') {
-        if (isBlocked) {
+        if (player.errors + 1 >= 3) {
           setGameState('finished');
           playSound('win');
         }
-      } else {
-        // Versus
-        if (isBlocked && otherPlayer.isBlocked) {
-          setGameState('finished');
-          playSound('win');
-        } else {
-          finishTurn(false);
-        }
+      } else if (otherPlayer.isBlocked && (player.errors + 1 >= 3)) {
+        setGameState('finished');
+        playSound('win');
       }
 
       setTimeout(() => setPlayer(prev => ({ ...prev, lastFeedback: null })), 800);
     }
-  };
+  }, [gameState, gameMode, currentTurn, isOnline, myRole, roomCode, currentList, revealed, p1, p2]);
 
-  const resetGame = (fromRemote = false) => {
+  const resetGame = useCallback((fromRemote = false) => {
     if (!fromRemote && socket) {
       if (isOnline) {
         socket.emit('gameEvent', { roomCode, event: { type: 'reset' } });
@@ -413,7 +420,15 @@ export default function GamePage() {
     setP2({ score: 0, errors: 0, hintsUsed: 0, input: '', isBlocked: false, lastFeedback: null });
     setGameState('playing');
     setCurrentTurn(1);
-  };
+  }, [socket, isOnline, roomCode]);
+
+  const changeList = useCallback((idx: number, fromRemote = false) => {
+    setListIndex(idx);
+    resetGame(fromRemote);
+    if (!fromRemote && isOnline && myRole === 1 && socket) {
+      socket.emit('gameEvent', { roomCode, event: { type: 'changeList', index: idx } });
+    }
+  }, [isOnline, myRole, socket, roomCode, resetGame]);
 
   // Refs for handlers to avoid stale closures in socket effect
   const handleGuessRef = useRef(handleGuess);
@@ -443,6 +458,9 @@ export default function GamePage() {
 
     socket.on('roomUpdate', (room: any) => {
       setRoomData(room);
+      if (room.listIndex !== undefined) {
+        setListIndex(room.listIndex);
+      }
     });
 
     socket.on('gameEvent', (event: any) => {
@@ -489,8 +507,7 @@ export default function GamePage() {
   };
 
   const nextList = () => {
-    setListIndex((prev) => (prev + 1) % listasCustom.length);
-    resetGame();
+    changeList((listIndex + 1) % listasCustom.length);
   };
 
   const winner = p1.score > p2.score ? 1 : p2.score > p1.score ? 2 : 0;
@@ -591,69 +608,92 @@ export default function GamePage() {
                 exit={{ opacity: 0, y: 20 }}
                 className="max-w-md mx-auto mt-8 p-8 border border-[#e4e3e0]/10 bg-[#0a0a0a] space-y-6"
               >
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center border-b border-white/5 pb-4">
                   <h3 className="text-xl font-mono font-bold uppercase text-cyan-400">Sala Online</h3>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => {
-                        const code = Math.random().toString(36).substring(2, 6).toUpperCase();
-                        setRoomCode(code);
-                      }}
-                      className="text-[8px] border border-cyan-500/30 px-2 py-1 hover:bg-cyan-500/10 transition-colors uppercase font-mono"
-                    >
-                      Gerar Código
-                    </button>
-                  </div>
+                  <button onClick={() => setGameMode('menu')} className="text-[8px] font-mono opacity-40 uppercase hover:opacity-100">Voltar</button>
                 </div>
                 
-                <div className="space-y-4 text-left">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-mono opacity-40 uppercase font-bold">Seu Apelido</label>
-                    <input 
-                      type="text"
-                      className="w-full bg-black border border-white/10 p-4 text-sm focus:border-cyan-400 outline-none uppercase"
-                      value={playerName}
-                      onChange={(e) => setPlayerName(e.target.value.toUpperCase())}
-                      placeholder="EX: THIAGO"
-                    />
+                <div className="space-y-6">
+                  <div className="space-y-4 text-left">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-mono opacity-40 uppercase font-bold tracking-widest">Seu Apelido</label>
+                      <input 
+                        type="text"
+                        className="w-full bg-black border border-white/10 p-4 text-sm focus:border-cyan-400 outline-none uppercase font-mono"
+                        value={playerName}
+                        onChange={(e) => setPlayerName(e.target.value.toUpperCase())}
+                        placeholder="EX: THIAGO"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-mono opacity-40 uppercase font-bold">Código da Sala</label>
-                    <input 
-                      type="text"
-                      className="w-full bg-black border border-white/10 p-4 text-sm focus:border-cyan-400 outline-none uppercase"
-                      value={roomCode}
-                      onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                      placeholder="EX: ABCD"
-                    />
+
+                  <div className="grid grid-cols-1 gap-6">
+                    {/* Create Section */}
+                    <div className="p-4 border border-white/5 bg-white/5 space-y-4">
+                      <div className="flex justify-between items-center">
+                        <label className="text-[10px] font-mono opacity-60 uppercase font-bold">Criar Nova Sala</label>
+                        <button 
+                          onClick={() => {
+                            const code = Math.random().toString(36).substring(2, 6).toUpperCase();
+                            setRoomCode(code);
+                          }}
+                          className="text-[8px] bg-cyan-500 text-black px-2 py-1 uppercase font-bold"
+                        >
+                          Gerar
+                        </button>
+                      </div>
+                      <div className="flex gap-2">
+                        <div className="flex-1 bg-black border border-white/10 p-3 font-mono text-center text-xl tracking-[0.5em] text-cyan-400">
+                          {roomCode || "----"}
+                        </div>
+                        <button 
+                          disabled={!playerName || !roomCode}
+                          onClick={() => {
+                            if (socket) socket.emit('joinRoom', { roomCode, playerName });
+                          }}
+                          className="px-6 bg-cyan-500 text-black font-mono font-bold uppercase text-[10px] hover:bg-cyan-400 disabled:opacity-50"
+                        >
+                          Criar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="h-[1px] flex-1 bg-white/10" />
+                      <span className="text-[8px] font-mono opacity-20 uppercase">OU</span>
+                      <div className="h-[1px] flex-1 bg-white/10" />
+                    </div>
+
+                    {/* Join Section */}
+                    <div className="p-4 border border-white/5 space-y-4">
+                      <label className="text-[10px] font-mono opacity-60 uppercase font-bold block text-left">Entrar em Existente</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="text"
+                          className="flex-1 bg-black border border-white/10 p-3 text-center font-mono text-xl focus:border-cyan-400 outline-none uppercase tracking-[0.5em]"
+                          value={roomCode}
+                          onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+                          placeholder="CODE"
+                        />
+                        <button 
+                          disabled={!playerName || roomCode.length < 4}
+                          onClick={() => {
+                            if (socket) socket.emit('joinRoom', { roomCode, playerName });
+                          }}
+                          className="px-6 border border-cyan-500/50 text-cyan-400 font-mono font-bold uppercase text-[10px] hover:bg-cyan-500/10 disabled:opacity-50"
+                        >
+                          Entrar
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {error && <p className="text-red-500 text-[10px] font-mono uppercase">{error}</p>}
-
-                <div className="flex gap-4">
-                  <button 
-                    onClick={() => setGameMode('menu')}
-                    className="flex-1 py-3 border border-white/10 text-[10px] font-mono uppercase"
-                  >
-                    Voltar
-                  </button>
-                  <button 
-                    disabled={!playerName || !roomCode}
-                    onClick={() => {
-                      if (socket) {
-                        socket.emit('joinRoom', { roomCode, playerName });
-                      }
-                    }}
-                    className="flex-2 py-3 bg-cyan-500 text-black font-mono font-bold uppercase text-[10px] hover:bg-cyan-400 disabled:opacity-50"
-                  >
-                    {roomData ? "Entrar na Sala" : "Criar / Entrar"}
-                  </button>
-                </div>
+                {error && <p className="text-red-500 text-[10px] font-mono uppercase text-center animate-pulse">{error}</p>}
 
                 <div className="pt-4 border-t border-white/5">
                   <p className="text-[9px] font-mono opacity-30 text-center uppercase leading-relaxed">
-                    Para jogar com um amigo, envie o código para ele. O jogo iniciará assim que ambos entrarem com o mesmo código.
+                    A partida iniciará automaticamente quando o segundo jogador entrar.
                   </p>
                 </div>
               </motion.div>
@@ -1157,12 +1197,8 @@ export default function GamePage() {
                   <button 
                     key={idx}
                     onClick={() => {
-                      setListIndex(idx);
+                      changeList(idx);
                       setIsListSelectorOpen(false);
-                      resetGame();
-                      if (socket) {
-                        socket.emit('resposta', { type: 'changeList', index: idx });
-                      }
                     }}
                     className={cn(
                       "text-left p-4 border transition-all space-y-1 group",
@@ -1172,6 +1208,7 @@ export default function GamePage() {
                     )}
                   >
                     <h3 className="text-sm font-mono font-bold uppercase group-hover:text-cyan-400 transition-colors">{lista.titulo}</h3>
+                    {isOnline && myRole !== 1 && <span className="text-[8px] bg-red-500/20 text-red-400 px-1 font-mono uppercase">Apenas Criador</span>}
                     <p className="text-[9px] font-mono opacity-40 uppercase truncate">{lista.subtitulo}</p>
                   </button>
                 ))}

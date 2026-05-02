@@ -38,7 +38,8 @@ io.on("connection", (socket) => {
       rooms.set(roomCode, {
         players: [],
         gameState: null,
-        currentTurn: 1
+        currentTurn: 1,
+        listIndex: 0
       });
     }
 
@@ -57,8 +58,14 @@ io.on("connection", (socket) => {
   socket.on("gameEvent", ({ roomCode, event }) => {
     const room = rooms.get(roomCode);
     if (room) {
-      // Broadcast the event to everyone in the room except the sender
-      socket.to(roomCode).emit("gameEvent", event);
+      if (event.type === "changeList") {
+        room.listIndex = event.index;
+        // Broadcast to everyone including sender to keep them in sync via roomUpdate
+        io.to(roomCode).emit("roomUpdate", room);
+      } else {
+        // Broadcast other events to everyone in the room except the sender
+        socket.to(roomCode).emit("gameEvent", event);
+      }
     }
   });
 

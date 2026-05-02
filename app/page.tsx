@@ -4,6 +4,10 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Trophy, XCircle, RefreshCw, Layers, Swords, User, AlertTriangle, Settings, Plus, Trash2, Download, Edit2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { io, Socket } from 'socket.io-client';
+
+// --- Socket Setup ---
+let socket: Socket;
 
 // --- Data ---
 interface RankingItem {
@@ -235,9 +239,13 @@ export default function GamePage() {
   const currentList = listasCustom[listIndex] || { titulo: "Sem Lista", subtitulo: "Crie uma lista no Modo Dev", respostas: [] };
 
   // Logic
-  const handleHint = (playerId: 1 | 2, pos?: number) => {
+  const handleHint = (playerId: 1 | 2, pos?: number, fromRemote = false) => {
     if (gameState === 'finished') return;
     if (gameMode === 'versus' && currentTurn !== playerId) return;
+
+    if (!fromRemote && socket) {
+      socket.emit('resposta', { type: 'hint', playerId, pos });
+    }
 
     const player = playerId === 1 ? p1 : p2;
     const setPlayer = playerId === 1 ? setP1 : setP2;
@@ -266,10 +274,13 @@ export default function GamePage() {
     }
   };
 
-  const handleGuess = (playerId: 1 | 2, value: string) => {
+  const handleGuess = (playerId: 1 | 2, value: string, fromRemote = false) => {
     if (gameState === 'finished') return;
     if (gameMode === 'versus' && currentTurn !== playerId) return;
     
+    if (!fromRemote && socket) {
+      socket.emit('resposta', { type: 'guess', playerId, value });
+    }
     const player = playerId === 1 ? p1 : p2;
     const setPlayer = playerId === 1 ? setP1 : setP2;
     const otherPlayer = playerId === 1 ? p2 : p1;
@@ -363,7 +374,10 @@ export default function GamePage() {
     }
   };
 
-  const resetGame = () => {
+  const resetGame = (fromRemote = false) => {
+    if (!fromRemote && socket) {
+      socket.emit('resposta', { type: 'reset' });
+    }
     setRevealed({});
     setRevealedHints([]);
     setP1({ score: 0, errors: 0, hintsUsed: 0, input: '', isBlocked: false, lastFeedback: null });
@@ -371,6 +385,47 @@ export default function GamePage() {
     setGameState('playing');
     setCurrentTurn(1);
   };
+
+  // Refs for handlers to avoid stale closures in socket effect
+  const handleGuessRef = useRef(handleGuess);
+  const handleHintRef = useRef(handleHint);
+  const resetGameRef = useRef(resetGame);
+  const setListIndexRef = useRef(setListIndex);
+  const setGameModeRef = useRef(setGameMode);
+
+  useEffect(() => {
+    handleGuessRef.current = handleGuess;
+    handleHintRef.current = handleHint;
+    resetGameRef.current = resetGame;
+    setListIndexRef.current = setListIndex;
+    setGameModeRef.current = setGameMode;
+  });
+
+  // Multi-player Socket Logic
+  useEffect(() => {
+    socket = io();
+
+    socket.on('resposta', (data: any) => {
+      console.log('Recebido via socket:', data);
+      if (data.type === 'guess') {
+        handleGuessRef.current(data.playerId, data.value, true);
+      } else if (data.type === 'hint') {
+        handleHintRef.current(data.playerId, data.pos, true);
+      } else if (data.type === 'reset') {
+        resetGameRef.current(true);
+      } else if (data.type === 'changeList') {
+        setListIndexRef.current(data.index);
+        resetGameRef.current(true);
+      } else if (data.type === 'mode') {
+        setGameModeRef.current(data.mode);
+        resetGameRef.current(true);
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const quitToMenu = () => {
     setGameMode('menu');
@@ -409,7 +464,11 @@ export default function GamePage() {
           <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-6", listasCustom.length === 0 && "opacity-50 grayscale pointer-events-none")}>
             <button 
               disabled={listasCustom.length === 0}
-              onClick={() => { setGameMode('solo'); resetGame(); }}
+              onClick={() => { 
+                setGameMode('solo'); 
+                resetGame();
+                if (socket) socket.emit('resposta', { type: 'mode', mode: 'solo' });
+              }}
               className="group relative p-8 border border-[#e4e3e0]/10 bg-[#0a0a0a] hover:border-cyan-500/50 transition-all text-left space-y-4"
             >
               <User size={32} className="text-cyan-400 group-hover:scale-110 transition-transform" />
@@ -422,7 +481,11 @@ export default function GamePage() {
 
             <button 
               disabled={listasCustom.length === 0}
-              onClick={() => { setGameMode('versus'); resetGame(); }}
+              onClick={() => { 
+                setGameMode('versus'); 
+                resetGame(); 
+                if (socket) socket.emit('resposta', { type: 'mode', mode: 'versus' });
+              }}
               className="group relative p-8 border border-[#e4e3e0]/10 bg-[#0a0a0a] hover:border-pink-500/50 transition-all text-left space-y-4"
             >
               <Swords size={32} className="text-pink-400 group-hover:scale-110 transition-transform" />
@@ -869,7 +932,7 @@ export default function GamePage() {
       {/* Global Controls */}
       <div className="max-w-7xl mx-auto mt-8 md:mt-16 pt-8 border-t border-[#e4e3e0]/10 flex flex-wrap gap-3 md:gap-4 justify-center px-4 mb-8">
         <button 
-          onClick={resetGame}
+          onClick={() => resetGame()}
           className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-4 md:px-6 py-3 border border-[#e4e3e0]/20 hover:bg-[#e4e3e0]/5 transition-colors font-mono uppercase tracking-widest text-[10px] md:text-xs"
         >
           <RefreshCw size={14} />
@@ -918,6 +981,9 @@ export default function GamePage() {
                       setListIndex(idx);
                       setIsListSelectorOpen(false);
                       resetGame();
+                      if (socket) {
+                        socket.emit('resposta', { type: 'changeList', index: idx });
+                      }
                     }}
                     className={cn(
                       "text-left p-4 border transition-all space-y-1 group",
@@ -984,7 +1050,7 @@ export default function GamePage() {
 
               <div className="pt-4 flex flex-col gap-3">
                 <button 
-                  onClick={resetGame}
+                  onClick={() => resetGame()}
                   className="w-full py-4 bg-[#e4e3e0] text-black font-mono font-bold uppercase tracking-[0.2em] hover:bg-white transition-all shadow-[0_0_30px_rgba(228,227,224,0.1)]"
                 >
                   Jogar Novamente

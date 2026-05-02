@@ -222,7 +222,14 @@ interface PlayerState {
 }
 
 export default function GamePage() {
-  const [gameMode, setGameMode] = useState<'menu' | 'solo' | 'versus' | 'dev'>('menu');
+  const [gameMode, setGameMode] = useState<'menu' | 'solo' | 'versus' | 'versus_select' | 'online_lobby' | 'dev'>('menu');
+  const [isOnline, setIsOnline] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+  const [roomCode, setRoomCode] = useState('');
+  const [myRole, setMyRole] = useState<number | null>(null);
+  const [roomData, setRoomData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
   const [currentTurn, setCurrentTurn] = useState<1 | 2>(1);
   const [listasCustom, setListasCustom] = useState<JogoLista[]>(LISTAS_POP);
   const [listIndex, setListIndex] = useState(0);
@@ -242,9 +249,14 @@ export default function GamePage() {
   const handleHint = (playerId: 1 | 2, pos?: number, fromRemote = false) => {
     if (gameState === 'finished') return;
     if (gameMode === 'versus' && currentTurn !== playerId) return;
+    if (isOnline && !fromRemote && playerId !== myRole) return;
 
     if (!fromRemote && socket) {
-      socket.emit('resposta', { type: 'hint', playerId, pos });
+      if (isOnline) {
+        socket.emit('gameEvent', { roomCode, event: { type: 'hint', playerId, pos } });
+      } else {
+        socket.emit('resposta', { type: 'hint', playerId, pos });
+      }
     }
 
     const player = playerId === 1 ? p1 : p2;
@@ -277,9 +289,14 @@ export default function GamePage() {
   const handleGuess = (playerId: 1 | 2, value: string, fromRemote = false) => {
     if (gameState === 'finished') return;
     if (gameMode === 'versus' && currentTurn !== playerId) return;
+    if (isOnline && !fromRemote && playerId !== myRole) return;
     
     if (!fromRemote && socket) {
-      socket.emit('resposta', { type: 'guess', playerId, value });
+      if (isOnline) {
+        socket.emit('gameEvent', { roomCode, event: { type: 'guess', playerId, value } });
+      } else {
+        socket.emit('resposta', { type: 'guess', playerId, value });
+      }
     }
     const player = playerId === 1 ? p1 : p2;
     const setPlayer = playerId === 1 ? setP1 : setP2;
@@ -376,7 +393,11 @@ export default function GamePage() {
 
   const resetGame = (fromRemote = false) => {
     if (!fromRemote && socket) {
-      socket.emit('resposta', { type: 'reset' });
+      if (isOnline) {
+        socket.emit('gameEvent', { roomCode, event: { type: 'reset' } });
+      } else {
+        socket.emit('resposta', { type: 'reset' });
+      }
     }
     setRevealed({});
     setRevealedHints([]);
@@ -399,11 +420,36 @@ export default function GamePage() {
     resetGameRef.current = resetGame;
     setListIndexRef.current = setListIndex;
     setGameModeRef.current = setGameMode;
-  });
+  }, [handleGuess, handleHint, resetGame, setListIndex, setGameMode]);
 
   // Multi-player Socket Logic
   useEffect(() => {
     socket = io();
+
+    socket.on('joined', ({ role, room }: any) => {
+      setMyRole(role);
+      setRoomData(room);
+      setGameMode('versus');
+      setError(null);
+    });
+
+    socket.on('roomUpdate', (room: any) => {
+      setRoomData(room);
+    });
+
+    socket.on('gameEvent', (event: any) => {
+      if (event.type === 'guess') {
+        handleGuessRef.current(event.playerId, event.value, true);
+      } else if (event.type === 'hint') {
+        handleHintRef.current(event.playerId, event.pos, true);
+      } else if (event.type === 'reset') {
+        resetGameRef.current(true);
+      }
+    });
+
+    socket.on('error', (msg: string) => {
+      setError(msg);
+    });
 
     socket.on('resposta', (data: any) => {
       console.log('Recebido via socket:', data);
@@ -439,7 +485,7 @@ export default function GamePage() {
 
   const winner = p1.score > p2.score ? 1 : p2.score > p1.score ? 2 : 0;
 
-  if (gameMode === 'menu') {
+  if (gameMode === 'menu' || gameMode === 'versus_select' || gameMode === 'online_lobby') {
     return (
       <main className="min-h-screen bg-black text-[#e4e3e0] flex items-center justify-center p-4">
         <div className="max-w-2xl w-full text-center space-y-12">
@@ -482,20 +528,108 @@ export default function GamePage() {
             <button 
               disabled={listasCustom.length === 0}
               onClick={() => { 
-                setGameMode('versus'); 
-                resetGame(); 
-                if (socket) socket.emit('resposta', { type: 'mode', mode: 'versus' });
+                setGameMode('versus_select'); 
               }}
               className="group relative p-8 border border-[#e4e3e0]/10 bg-[#0a0a0a] hover:border-pink-500/50 transition-all text-left space-y-4"
             >
               <Swords size={32} className="text-pink-400 group-hover:scale-110 transition-transform" />
               <div>
                 <h2 className="text-xl font-mono font-bold uppercase tracking-tight">Modo Versus</h2>
-                <p className="text-xs text-[#e4e3e0]/40 font-mono leading-relaxed mt-1">Desafie um amigo localmente em uma disputa por turnos.</p>
+                <p className="text-xs text-[#e4e3e0]/40 font-mono leading-relaxed mt-1">Desafie um amigo localmente ou em uma sala online privada.</p>
               </div>
               <div className="absolute bottom-0 left-0 w-0 h-1 bg-pink-400 group-hover:w-full transition-all duration-500" />
             </button>
           </div>
+
+          <AnimatePresence>
+            {gameMode === 'versus_select' && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8"
+              >
+                <button 
+                  onClick={() => {
+                    setGameMode('versus');
+                    setIsOnline(false);
+                    resetGame();
+                    if (socket) socket.emit('resposta', { type: 'mode', mode: 'versus' });
+                  }}
+                  className="p-6 border border-[#e4e3e0]/10 bg-[#0a0a0a] hover:border-pink-500/50 transition-all"
+                >
+                  <h3 className="font-mono font-bold uppercase">Versus Local</h3>
+                  <p className="text-[10px] opacity-40 uppercase mt-1">Jogadores no mesmo dispositivo</p>
+                </button>
+                <button 
+                  onClick={() => {
+                    setGameMode('online_lobby');
+                    setIsOnline(true);
+                  }}
+                  className="p-6 border border-[#e4e3e0]/10 bg-[#0a0a0a] hover:border-cyan-500/50 transition-all"
+                >
+                  <h3 className="font-mono font-bold uppercase">Versus Online</h3>
+                  <p className="text-[10px] opacity-40 uppercase mt-1">Jogue contra amigos via código</p>
+                </button>
+              </motion.div>
+            )}
+
+            {gameMode === 'online_lobby' && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="max-w-md mx-auto mt-8 p-8 border border-[#e4e3e0]/10 bg-[#0a0a0a] space-y-6"
+              >
+                <h3 className="text-xl font-mono font-bold uppercase text-cyan-400">Sala Online</h3>
+                
+                <div className="space-y-4 text-left">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-mono opacity-40 uppercase font-bold">Seu Apelido</label>
+                    <input 
+                      type="text"
+                      className="w-full bg-black border border-white/10 p-4 text-sm focus:border-cyan-400 outline-none uppercase"
+                      value={playerName}
+                      onChange={(e) => setPlayerName(e.target.value.toUpperCase())}
+                      placeholder="EX: THIAGO"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-mono opacity-40 uppercase font-bold">Código da Sala</label>
+                    <input 
+                      type="text"
+                      className="w-full bg-black border border-white/10 p-4 text-sm focus:border-cyan-400 outline-none uppercase"
+                      value={roomCode}
+                      onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+                      placeholder="EX: TOP10"
+                    />
+                  </div>
+                </div>
+
+                {error && <p className="text-red-500 text-[10px] font-mono uppercase">{error}</p>}
+
+                <div className="flex gap-4">
+                  <button 
+                    onClick={() => setGameMode('menu')}
+                    className="flex-1 py-3 border border-white/10 text-[10px] font-mono uppercase"
+                  >
+                    Voltar
+                  </button>
+                  <button 
+                    disabled={!playerName || !roomCode}
+                    onClick={() => {
+                      if (socket) {
+                        socket.emit('joinRoom', { roomCode, playerName });
+                      }
+                    }}
+                    className="flex-2 py-3 bg-cyan-500 text-black font-mono font-bold uppercase text-[10px] hover:bg-cyan-400 disabled:opacity-50"
+                  >
+                    Entrar na Sala
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {listasCustom.length === 0 && (
             <motion.div 
@@ -741,12 +875,26 @@ export default function GamePage() {
       
       {/* Header */}
       <header className="max-w-7xl mx-auto mb-6 md:mb-12 text-center relative px-2">
-        <button 
-          onClick={quitToMenu}
-          className="md:absolute left-0 top-0 text-[10px] font-mono uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity flex items-center justify-center gap-2 mb-4 md:mb-0"
-        >
-          <XCircle size={14} /> Sair do Jogo
-        </button>
+        <div className="flex flex-col md:flex-row items-center justify-between mb-4 gap-4">
+          <button 
+            onClick={quitToMenu}
+            className="text-[10px] font-mono uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity flex items-center justify-center gap-2"
+          >
+            <XCircle size={14} /> Sair do Jogo
+          </button>
+
+          {isOnline && (
+            <div className="flex items-center gap-4 bg-white/5 px-4 py-2 border border-white/10 rounded-full font-mono text-[10px] uppercase">
+              <span className="opacity-40">Sala: <span className="text-cyan-400 font-bold">{roomCode}</span></span>
+              <span className="w-1 h-1 rounded-full bg-white/20" />
+              <span className="opacity-40">Jogadores: <span className="text-white/80">{roomData?.players.length || 0}/2</span></span>
+              <span className="w-1 h-1 rounded-full bg-white/20" />
+              <span className={cn("font-bold", myRole === 1 ? "text-cyan-400" : "text-pink-400")}>
+                VOCÊ É O P{myRole} ({playerName})
+              </span>
+            </div>
+          )}
+        </div>
 
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
@@ -754,7 +902,7 @@ export default function GamePage() {
           className="inline-flex items-center gap-3 px-3 py-1 mb-4 border border-[#e4e3e0]/20 rounded-full text-[9px] md:text-[10px] uppercase tracking-[0.2em] font-mono text-[#e4e3e0]/60"
         >
           {gameMode === 'versus' ? <Swords size={12} className="text-pink-400" /> : <User size={12} className="text-cyan-400" />}
-          {gameMode === 'versus' ? "Modo Competitivo" : "Modo Prática Solo"}
+          {gameMode === 'versus' ? (isOnline ? "Online Competitivo" : "Modo Competitivo") : "Modo Prática Solo"}
           <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
         </motion.div>
         
@@ -809,10 +957,11 @@ export default function GamePage() {
             "border-cyan-500/50",
             gameMode === 'versus' && currentTurn === 1 && "ring-2 ring-cyan-500 ring-offset-4 ring-offset-black"
           )}
-          label={gameMode === 'solo' ? "PONTUAÇÃO" : "JOGADOR 1"}
+          label={gameMode === 'solo' ? "PONTUAÇÃO" : (isOnline && roomData?.players[0] ? roomData.players[0].name : "JOGADOR 1")}
           gameState={gameState}
           isTurn={gameMode === 'versus' ? currentTurn === 1 : true}
           gameMode={gameMode}
+          isMe={isOnline ? myRole === 1 : true}
         />
 
         {/* Center: Top 10 List */}
@@ -920,10 +1069,11 @@ export default function GamePage() {
               "border-pink-500/50",
               currentTurn === 2 && "ring-2 ring-pink-500 ring-offset-4 ring-offset-black"
             )}
-            label="JOGADOR 2"
+            label={isOnline && roomData?.players[1] ? roomData.players[1].name : "JOGADOR 2"}
             gameState={gameState}
             isTurn={currentTurn === 2}
             gameMode={gameMode}
+            isMe={isOnline ? myRole === 2 : true}
           />
         )}
 
@@ -1076,18 +1226,18 @@ export default function GamePage() {
 
 // Sub-component for individual player logic/UI
 function PlayerArea({ 
-  id, player, setPlayer, onGuess, onHint, accentColor, accentBg, borderColor, label, gameState, isTurn, gameMode
+  id, player, setPlayer, onGuess, onHint, accentColor, accentBg, borderColor, label, gameState, isTurn, gameMode, isMe
 }: { 
   id: number, player: PlayerState, setPlayer: React.Dispatch<React.SetStateAction<PlayerState>>, 
   onGuess: (v: string) => void, onHint: () => void, accentColor: string, accentBg: string, borderColor: string, label: string, gameState: string,
-  isTurn: boolean, gameMode: string
+  isTurn: boolean, gameMode: string, isMe?: boolean
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const hintLimit = gameMode === 'versus' ? 1 : 3;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (player.input.trim() && isTurn) {
+    if (player.input.trim() && isTurn && isMe) {
       onGuess(player.input);
     }
   };
@@ -1096,7 +1246,8 @@ function PlayerArea({
     <div className={cn(
       "space-y-4 md:space-y-6 p-4 md:p-8 border bg-[#0a0a0a] transition-all relative overflow-hidden",
       borderColor,
-      (player.isBlocked || !isTurn) && "opacity-50 grayscale"
+      (player.isBlocked || !isTurn) && "opacity-50 grayscale",
+      !isMe && isTurn && "ring-1 ring-white/10"
     )}>
       {/* Turn indicator glow */}
       {isTurn && !player.isBlocked && gameState === 'playing' && (
@@ -1105,8 +1256,9 @@ function PlayerArea({
 
       {/* Label & Status */}
       <div className="flex justify-between items-end border-b border-[#e4e3e0]/10 pb-3 md:pb-4">
-        <div>
+        <div className="relative">
           <h3 className={cn("font-mono text-[9px] md:text-[10px] tracking-[0.2em] md:tracking-[0.3em] font-bold", accentColor)}>{label}</h3>
+          {isMe && <span className="absolute -top-4 left-0 text-[8px] opacity-40 font-mono uppercase bg-white/10 px-1">Você</span>}
           <div className="text-3xl md:text-4xl font-mono font-bold tracking-tighter mt-1">{player.score}</div>
           <div className="text-[8px] md:text-[9px] font-mono opacity-30 uppercase tracking-widest mt-0.5">Pontos</div>
         </div>
@@ -1145,20 +1297,20 @@ function PlayerArea({
           "block text-[10px] font-mono uppercase tracking-widest opacity-40 mb-2 transition-colors",
           isTurn && "opacity-100 font-bold"
         )}>
-          {isTurn ? "Sua vez de digitar:" : "Aguarde o adversário..."}
+          {isTurn ? (isMe ? "Sua vez de digitar:" : "Aguarde o adversário...") : "Aguarde o adversário..."}
         </label>
         
         <div className="flex items-center gap-2">
           <input 
             ref={inputRef}
             type="text"
-            disabled={player.isBlocked || gameState === 'finished' || !isTurn}
+            disabled={player.isBlocked || gameState === 'finished' || !isTurn || !isMe}
             value={player.input}
             onChange={(e) => setPlayer(prev => ({ ...prev, input: e.target.value }))}
-            placeholder={player.isBlocked ? "BLOQUEADO" : !isTurn ? "TURNO DO ADVERSÁRIO" : "Sua aposta?"}
+            placeholder={player.isBlocked ? "BLOQUEADO" : !isTurn ? "TURNO DO ADVERSÁRIO" : (isMe ? "Sua aposta?" : "TURNO DO ADVERSÁRIO")}
             className={cn(
               "w-full bg-[#141414] border border-[#e4e3e0]/10 p-3 md:p-4 font-mono text-xs md:text-sm tracking-wide focus:outline-none focus:border-[#e4e3e0]/40 transition-all uppercase placeholder:normal-case",
-              (player.isBlocked || !isTurn) && "cursor-not-allowed opacity-50 bg-[#050505]"
+              (player.isBlocked || !isTurn || !isMe) && "cursor-not-allowed opacity-50 bg-[#050505]"
             )}
           />
           
@@ -1166,11 +1318,11 @@ function PlayerArea({
           <button 
             type="button"
             onClick={onHint}
-            disabled={player.isBlocked || gameState === 'finished' || !isTurn || player.hintsUsed >= hintLimit}
+            disabled={player.isBlocked || gameState === 'finished' || !isTurn || !isMe || player.hintsUsed >= hintLimit}
             title={player.hintsUsed >= hintLimit ? "Dicas esgotadas" : `Usar dica (${player.hintsUsed}/${hintLimit})`}
             className={cn(
               "flex items-center justify-center w-14 h-14 transition-all active:scale-95 border",
-              player.hintsUsed >= hintLimit || !isTurn || player.isBlocked
+              player.hintsUsed >= hintLimit || !isTurn || !isMe || player.isBlocked
                 ? "border-white/5 text-white/10 cursor-not-allowed" 
                 : "border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10"
             )}
@@ -1180,12 +1332,12 @@ function PlayerArea({
 
           <button 
             type="submit"
-            disabled={player.isBlocked || gameState === 'finished' || !isTurn}
+            disabled={player.isBlocked || gameState === 'finished' || !isTurn || !isMe}
             className={cn(
               "flex items-center justify-center w-14 h-14 transition-all active:scale-95 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] shadow-lg shadow-black/20",
               accentBg,
               "text-black",
-              (!isTurn || player.isBlocked) && "grayscale opacity-50"
+              (!isTurn || !isMe || player.isBlocked) && "grayscale opacity-50"
             )}
           >
             <User size={18} />
@@ -1204,7 +1356,7 @@ function PlayerArea({
             ? "Limite de erros atingido. Tente novamente em outra partida."
             : !isTurn 
             ? "Pense bem no próximo item enquanto seu adversário joga."
-            : "Variações de nomes são aceitas automaticamente. Não se preocupe com acentos."}
+            : (isMe ? "Variações de nomes são aceitas automaticamente. Não se preocupe com acentos." : "Aguarde seu adversário realizar a jogada.")}
         </p>
       </div>
 

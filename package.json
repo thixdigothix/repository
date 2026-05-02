@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "ts-node server.ts",
+    "dev": "npx tsx watch server.ts",
     "build": "next build",
-    "start": "ts-node server.ts",
+    "start": "npx tsx server.ts",
     "lint": "eslint .",
     "clean": "next clean"
   },

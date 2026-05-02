@@ -97,7 +97,7 @@ const LISTAS_POP: JogoLista[] = [
       { posicao: 3, nome: "Barra do Imbúi", variantes: ["Barra", "Barra do Imbui"], dica: "Corte da..." },
       { posicao: 4, nome: "Meudon", variantes: ["Meudom", "Meudon"], dica: "Meu atacadista" },
       { posicao: 5, nome: "Quinta Lebrão", variantes: ["Quinta Lebrao", "Quinta Lebron"], dica: "Quarta..." },
-      { posicao: 6, nome: "Alto", variantes: ["Auto"], dica: "Feira" },
+      { posicao: 10, nome: "Alto", variantes: ["Auto"], dica: "Feira" },
       { posicao: 7, nome: "Granja Florestal", variantes: ["Granja"], dica: "Pedra da Tartartuga" },
       { posicao: 8, nome: "Jardim Meudon", variantes: ["Jardim Meudom"], dica: "Garden" },
       { posicao: 9, nome: "Tijuca", variantes: ["Tiguca"], dica: "Alterdata" },
@@ -118,6 +118,86 @@ const LISTAS_POP: JogoLista[] = [
       { posicao: 8, nome: "Tears For Fears", variantes: ["ters For fears", "Tears for fers"], dica: "Evebody wants to rule the world" },
       { posicao: 9, nome: "Clairo", variantes: ["Claire", "Claro"], dica: "Bedroom pop" },
       { posicao: 10, nome: "Kanye West", variantes: ["Ye", "Kanye"], dica: "Work hard make better" },
+    ]
+  },
+  {
+    titulo: "Sites mais acessados do mundo",
+    subtitulo: "Dados de 2025.",
+    respostas: [
+      { posicao: 1, nome: "Google", variantes: ["Goglee", "Gogle", "Googe"], dica: "Navegador" },
+      { posicao: 2, nome: "Youtube", variantes: ["Yotube", "YT"], dica: "Video" },
+      { posicao: 3, nome: "Facebook", variantes: ["Facebok", "Face"], dica: "Livro" },
+      { posicao: 4, nome: "Instragam", variantes: ["Insta", "Intagram", "Istagram", "Instagram", "Isntagram"], dica: "Meta" },
+      { posicao: 5, nome: "ChatGPT", variantes: ["GPT", "chat", "chat gpt"], dica: "I.A" },
+      { posicao: 6, nome: "X", variantes: ["Twitter", "X", "Twiter", "Tuitter", "Tweet", "Twiter"], dica: "Musk" },
+      { posicao: 7, nome: "Reddit", variantes: ["Redit", "Reditt"], dica: "Forum" },
+      { posicao: 8, nome: "WhatsApp", variantes: ["Whatsap", "Whats", "Wpp", "Wahtsapp", "Whatapp"], dica: "Mensagem" },
+      { posicao: 9, nome: "Bing", variantes: [], dica: "Google Série B" },
+      { posicao: 10, nome: "Wikipedia", variantes: ["Wiki", "Wikipédia", "Wikipidia"], dica: "Lugar da onde peguei essa lista" }
+    ]
+  },
+  {
+    titulo: "Frutas mais consumidas no mundo",
+    subtitulo: "Achei num site aqui, deve ser verdade",
+    respostas: [
+      { posicao: 1, nome: "Banana", dica: "Amarelo e de bolso" },
+      { posicao: 2, nome: "Maçã", variantes: ["Maca", "Maça"], dica: "Pecado" },
+      { posicao: 3, nome: "Tomate", variantes: [], dica: "Acham que não é fruta" },
+      { posicao: 4, nome: "Laranja", variantes: ["Laraja"], dica: "Cítrica mas não a mais" },
+      { posicao: 5, nome: "Manga", dica: "Tem na camisa" },
+      { posicao: 6, nome: "Melancia", variantes: ["Melacia"], dica: "94% água" },
+      { posicao: 7, nome: "Uva", dica: "Ovo com vogais diferentes", variantes: ["Uva verde", "uva roxa", "uva normal"] },
+      { posicao: 8, nome: "Abacaxi", variantes: ["Abacati"], dica: "Bob" },
+      { posicao: 9, nome: "Limão", variantes: ["Lima", "Limao"], dica: "Cítrica" },
+      { posicao: 10, nome: "Mamão", variantes: ["Mamao"], dica: "Lava a outra" }
+    ]
+  },
+  {
+    titulo: "Bebidas mais consumidas no mundo",
+    subtitulo: "Marcas não contam.",
+    respostas: [
+      { posicao: 1, nome: "Água", variantes: ["Agua"], dica: "Pedra no rim" },
+      { posicao: 2, nome: "Café", variantes: ["Cafe"], dica: "Se move montanhas" },
+      { posicao: 3, nome: "Leite", variantes: ["Leite de vaca"], dica: "Tetas" },
+      { posicao: 4, nome: "Sucos gerais", variantes: ["Sucos", "Suco", "Suco de laranja", "Suco de Morango", "Suco de abaxaxi"], dica: "Naturais" },
+      { posicao: 5, nome: "Refrigerante", variantes: ["Refri", "Coca Cola"], dica: "Faz mal pro teu rim" },
+      { posicao: 6, nome: "Cerveja", variantes: ["Ceveja"], dica: "Alcool" },
+      { posicao: 7, nome: "Vinho", dica: "Jesus", variantes: ["Vinho tinto", "Vinho suave", "Vinho seco"] },
+      { posicao: 8, nome: "Vodka", variantes: ["Vodika", "Vodca"], dica: "Russia" },
+      { posicao: 9, nome: "Energético", variantes: ["Red bull", "Energetico", "Monster"], dica: "Asas" },
+      { posicao: 10, nome: "Leite materno", variantes: ["Leite de mãe", "Leite humano", "Leite da minha mamãe"], dica: "Um bebê adora" }
+    ]
+  },
+  {
+    titulo: "Músicas mais ouvidas do Spotify",
+    subtitulo: "Até 2026",
+    respostas: [
+      { posicao: 1, nome: "Blinding Lights", variantes: ["Blinding", "Blind Lights", "Lights"], dica: "The Weeknd" },
+      { posicao: 2, nome: "Shape of you", variantes: ["Shape"], dica: "Ed Sheeran" },
+      { posicao: 3, nome: "Someone You Loved", variantes: ["Someone", "You loved"], dica: "Lewis Capaldi" },
+      { posicao: 4, nome: "Sunflower", variantes: [], dica: "Post Malone" },
+      { posicao: 5, nome: "As it was", dica: "Estudar Portugues" },
+      { posicao: 6, nome: "Stay", dica: " Kid Laroi" },
+      { posicao: 7, nome: "One Dance", variantes: ["Dance"], dica: "Drake" },
+      { posicao: 8, nome: "Dance Monkey", variantes: ["Dance for me"], dica: "Poluição sonora, Tones and i" },
+      { posicao: 9, nome: "Rockstar", variantes: ["Rock star"], dica: "Post Malone" },
+      { posicao: 10, nome: "Closer", variantes: ["Close"], dica: "Halsey" }
+    ]
+  },
+  {
+    titulo: "Nomes mais comuns do Brasil",
+    subtitulo: "Mulher e homem",
+    respostas: [
+      { posicao: 1, nome: "Maria", dica: "Da Penha" },
+      { posicao: 2, nome: "José", variantes: ["Jose"], dica: "Bonifácio" },
+      { posicao: 3, nome: "Ana", dica: "Castela" },
+      { posicao: 4, nome: "João", variantes: ["Joao"], dica: "Santo Cristo" },
+      { posicao: 5, nome: "Antonio", variantes: ["Antônio"], dica: "Baptista" },
+      { posicao: 6, nome: "Francisco", variantes: ["Franscisco"], dica: "Moedas" },
+      { posicao: 7, nome: "Pedro", dica: "Pascal" },
+      { posicao: 8, nome: "Carlos", dica: "Drummond" },
+      { posicao: 9, nome: "Lucas", dica: "Gadelhas" },
+      { posicao: 10, nome: "Luiz", variantes: ["Luis", "Lúis", "Lúiz"], dica: "Inácio" }
     ]
   }
 ];
@@ -239,6 +319,8 @@ export default function GamePage() {
   const [p1, setP1] = useState<PlayerState>({ score: 0, errors: 0, hintsUsed: 0, input: '', isBlocked: false, lastFeedback: null });
   const [p2, setP2] = useState<PlayerState>({ score: 0, errors: 0, hintsUsed: 0, input: '', isBlocked: false, lastFeedback: null });
   const [gameState, setGameState] = useState<'playing' | 'finished'>('playing');
+  const [showGameOver, setShowGameOver] = useState(false);
+  const [isAnswersRevealed, setIsAnswersRevealed] = useState(false);
 
   // Dev state
   const [editingList, setEditingList] = useState<JogoLista | null>(null);
@@ -363,6 +445,7 @@ export default function GamePage() {
         // Check if all revealed
         if (Object.keys(newRevealed).length === 10) {
           setGameState('finished');
+          setShowGameOver(true);
           playSound('win');
         } else {
           finishTurn(true);
@@ -395,10 +478,12 @@ export default function GamePage() {
       if (gameMode === 'solo') {
         if (player.errors + 1 >= 3) {
           setGameState('finished');
+          setShowGameOver(true);
           playSound('win');
         }
       } else if (otherPlayer.isBlocked && (player.errors + 1 >= 3)) {
         setGameState('finished');
+        setShowGameOver(true);
         playSound('win');
       }
 
@@ -419,8 +504,14 @@ export default function GamePage() {
     setP1({ score: 0, errors: 0, hintsUsed: 0, input: '', isBlocked: false, lastFeedback: null });
     setP2({ score: 0, errors: 0, hintsUsed: 0, input: '', isBlocked: false, lastFeedback: null });
     setGameState('playing');
+    setShowGameOver(false);
     setCurrentTurn(1);
+    setIsAnswersRevealed(false);
   }, [socket, isOnline, roomCode]);
+
+  const revealAllAnswers = () => {
+    setIsAnswersRevealed(true);
+  };
 
   const changeList = useCallback((idx: number, fromRemote = false) => {
     setListIndex(idx);
@@ -1037,16 +1128,21 @@ export default function GamePage() {
                 {/* Content */}
                 <div className="flex-1 px-4 md:px-6 flex justify-between items-center overflow-hidden">
                   <AnimatePresence mode="wait">
-                    {revealedBy ? (
+                    {(revealedBy || isAnswersRevealed) ? (
                       <motion.div 
                         key="revealed"
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         className="flex flex-col min-w-0"
                       >
-                        <span className="font-mono font-bold text-sm md:text-lg uppercase tracking-tight truncate">{item?.nome}</span>
+                        <span className={cn(
+                          "font-mono font-bold text-sm md:text-lg uppercase tracking-tight truncate",
+                          !revealedBy && isAnswersRevealed && "text-cyan-400 opacity-60"
+                        )}>
+                          {item?.nome}
+                        </span>
                         <span className="text-[8px] md:text-[10px] font-mono tracking-widest opacity-40 uppercase truncate">
-                          {gameMode === 'versus' ? `P${revealedBy}` : 'Descoberto'} • +{pos} Pts
+                          {revealedBy ? (gameMode === 'versus' ? `P${revealedBy}` : 'Descoberto') : 'Revelado'} • +{pos} Pts
                         </span>
                       </motion.div>
                     ) : (
@@ -1194,7 +1290,7 @@ export default function GamePage() {
 
       {/* Game Over Overlay */}
       <AnimatePresence>
-        {gameState === 'finished' && (
+        {showGameOver && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1206,6 +1302,13 @@ export default function GamePage() {
               animate={{ scale: 1, y: 0 }}
               className="max-w-xl w-full bg-[#141414] border border-[#e4e3e0]/10 p-12 text-center space-y-8 relative overflow-hidden"
             >
+              <button 
+                onClick={() => setShowGameOver(false)} 
+                className="absolute top-4 right-4 text-white/20 hover:text-white transition-colors"
+                title="Fechar para ver a lista"
+              >
+                <XCircle size={24} />
+              </button>
               {/* Winner Reveal */}
               <div className="space-y-2">
                 <Trophy size={64} className="mx-auto text-yellow-400 animate-bounce" />
@@ -1245,6 +1348,14 @@ export default function GamePage() {
                 >
                   Jogar Novamente
                 </button>
+                {!isAnswersRevealed && (
+                  <button 
+                    onClick={revealAllAnswers}
+                    className="w-full py-3 border border-yellow-500/30 text-yellow-500 font-mono font-bold uppercase text-[10px] tracking-widest hover:bg-yellow-500/10 transition-all"
+                  >
+                    Revelar Respostas
+                  </button>
+                )}
                 <button 
                   onClick={quitToMenu}
                   className="w-full py-4 border border-[#e4e3e0]/10 text-[#e4e3e0]/50 font-mono text-[10px] uppercase tracking-widest hover:text-[#e4e3e0] hover:bg-white/5 transition-all"

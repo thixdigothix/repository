@@ -606,94 +606,68 @@ export default function GamePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
-                className="max-w-md mx-auto mt-8 p-8 border border-[#e4e3e0]/10 bg-[#0a0a0a] space-y-6"
+                className="max-w-md mx-auto mt-4 p-6 border border-[#e4e3e0]/10 bg-[#0a0a0a] space-y-4"
               >
-                <div className="flex justify-between items-center border-b border-white/5 pb-4">
-                  <h3 className="text-xl font-mono font-bold uppercase text-cyan-400">Sala Online</h3>
-                  <button onClick={() => setGameMode('menu')} className="text-[8px] font-mono opacity-40 uppercase hover:opacity-100">Voltar</button>
+                <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                  <h3 className="text-lg font-mono font-bold uppercase text-cyan-400">Versus Online</h3>
+                  <button onClick={() => setGameMode('menu')} className="text-[10px] font-mono opacity-40 uppercase hover:opacity-100 flex items-center gap-1">
+                    <XCircle size={12} /> Sair
+                  </button>
                 </div>
                 
                 <div className="space-y-6">
-                  <div className="space-y-4 text-left">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-mono opacity-40 uppercase font-bold tracking-widest">Seu Apelido</label>
-                      <input 
-                        type="text"
-                        className="w-full bg-black border border-white/10 p-4 text-sm focus:border-cyan-400 outline-none uppercase font-mono"
-                        value={playerName}
-                        onChange={(e) => setPlayerName(e.target.value.toUpperCase())}
-                        placeholder="EX: THIAGO"
-                      />
-                    </div>
+                  {/* Apelido Section */}
+                  <div className="space-y-2 text-left">
+                    <label className="text-[10px] font-mono opacity-40 uppercase font-bold tracking-widest">1. Seu Apelido</label>
+                    <input 
+                      type="text"
+                      className="w-full bg-black border border-white/10 p-3 text-sm focus:border-cyan-400 outline-none uppercase font-mono"
+                      value={playerName}
+                      onChange={(e) => setPlayerName(e.target.value.toUpperCase())}
+                      placeholder="EX: THIAGO"
+                    />
                   </div>
 
-                  <div className="grid grid-cols-1 gap-6">
-                    {/* Create Section */}
-                    <div className="p-4 border border-white/5 bg-white/5 space-y-4">
-                      <div className="flex justify-between items-center">
-                        <label className="text-[10px] font-mono opacity-60 uppercase font-bold">Criar Nova Sala</label>
-                        <button 
-                          onClick={() => {
-                            const code = Math.random().toString(36).substring(2, 6).toUpperCase();
-                            setRoomCode(code);
-                          }}
-                          className="text-[8px] bg-cyan-500 text-black px-2 py-1 uppercase font-bold"
-                        >
-                          Gerar
-                        </button>
-                      </div>
-                      <div className="flex gap-2">
-                        <div className="flex-1 bg-black border border-white/10 p-3 font-mono text-center text-xl tracking-[0.5em] text-cyan-400">
-                          {roomCode || "----"}
-                        </div>
-                        <button 
-                          disabled={!playerName || !roomCode}
-                          onClick={() => {
-                            if (socket) socket.emit('joinRoom', { roomCode, playerName });
-                          }}
-                          className="px-6 bg-cyan-500 text-black font-mono font-bold uppercase text-[10px] hover:bg-cyan-400 disabled:opacity-50"
-                        >
-                          Criar
-                        </button>
-                      </div>
+                  {/* Room Section */}
+                  <div className="space-y-4 text-left">
+                    <div className="flex justify-between items-center">
+                      <label className="text-[10px] font-mono opacity-40 uppercase font-bold tracking-widest">2. Código da Sala</label>
+                      <button 
+                        onClick={() => {
+                          const code = Math.random().toString(36).substring(2, 6).toUpperCase();
+                          setRoomCode(code);
+                        }}
+                        className="text-[9px] text-cyan-400 hover:underline uppercase font-mono"
+                      >
+                        Gerar novo
+                      </button>
                     </div>
-
-                    <div className="flex items-center gap-4">
-                      <div className="h-[1px] flex-1 bg-white/10" />
-                      <span className="text-[8px] font-mono opacity-20 uppercase">OU</span>
-                      <div className="h-[1px] flex-1 bg-white/10" />
-                    </div>
-
-                    {/* Join Section */}
-                    <div className="p-4 border border-white/5 space-y-4">
-                      <label className="text-[10px] font-mono opacity-60 uppercase font-bold block text-left">Entrar em Existente</label>
-                      <div className="flex gap-2">
-                        <input 
-                          type="text"
-                          className="flex-1 bg-black border border-white/10 p-3 text-center font-mono text-xl focus:border-cyan-400 outline-none uppercase tracking-[0.5em]"
-                          value={roomCode}
-                          onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                          placeholder="CODE"
-                        />
-                        <button 
-                          disabled={!playerName || roomCode.length < 4}
-                          onClick={() => {
-                            if (socket) socket.emit('joinRoom', { roomCode, playerName });
-                          }}
-                          className="px-6 border border-cyan-500/50 text-cyan-400 font-mono font-bold uppercase text-[10px] hover:bg-cyan-500/10 disabled:opacity-50"
-                        >
-                          Entrar
-                        </button>
-                      </div>
+                    <div className="space-y-3">
+                      <input 
+                        type="text"
+                        className="w-full bg-black border border-white/10 p-4 text-center font-mono text-2xl focus:border-cyan-400 outline-none uppercase tracking-[0.4em]"
+                        value={roomCode}
+                        onChange={(e) => setRoomCode(e.target.value.toUpperCase().substring(0, 4))}
+                        placeholder="----"
+                      />
+                      <button 
+                        disabled={!playerName || roomCode.length < 4}
+                        onClick={() => {
+                          if (socket) socket.emit('joinRoom', { roomCode, playerName });
+                        }}
+                        className="w-full py-4 bg-cyan-500 text-black font-mono font-bold uppercase text-xs hover:bg-cyan-400 disabled:opacity-50 transition-colors"
+                      >
+                        Entrar na Sala
+                      </button>
                     </div>
                   </div>
                 </div>
 
                 {error && <p className="text-red-500 text-[10px] font-mono uppercase text-center animate-pulse">{error}</p>}
 
-                <div className="pt-4 border-t border-white/5">
-                  <p className="text-[9px] font-mono opacity-30 text-center uppercase leading-relaxed">
-                    A partida iniciará automaticamente quando o segundo jogador entrar.
+                <div className="pt-2 border-t border-white/5 pt-4">
+                  <p className="text-[9px] font-mono opacity-30 text-center uppercase leading-tight">
+                    Digite um código ou gere um novo.<br/>Envie o mesmo código para seu amigo entrar.
                   </p>
                 </div>
               </motion.div>

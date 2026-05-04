@@ -199,6 +199,86 @@ const LISTAS_POP: JogoLista[] = [
       { posicao: 9, nome: "Lucas", dica: "Gadelhas" },
       { posicao: 10, nome: "Luiz", variantes: ["Luis", "Lúis", "Lúiz"], dica: "Inácio" }
     ]
+  },
+  {
+    titulo: "Instrumentos musicais mais vendidos em 2025",
+    subtitulo: "No mundo",
+    respostas: [
+      { posicao: 1, nome: "Violão", variantes: ["Violao"] },
+      { posicao: 2, nome: "Guitarra", variantes: ["Guitara"], dica: "Hendrix" },
+      { posicao: 3, nome: "Teclado", dica: "Computador" },
+      { posicao: 4, nome: "Ukulele", variantes: ["Uculele", "Ukelele", "Ukulele"], dica: "Violão" },
+      { posicao: 5, nome: "Bateria", variantes: [], dica: "Bumbo" },
+      { posicao: 6, nome: "Piano", variantes: [], dica: "Teclas" },
+      { posicao: 7, nome: "Flauta", variantes: ["Flalta"], dica: "Assopra" },
+      { posicao: 8, nome: "Violino", variantes: [], dica: "Viole o Hino" },
+      { posicao: 9, nome: "Baixo", dica: "Altura" },
+      { posicao: 10, nome: "Cajon", variantes: ["Carron"], dica: "Bateria só que em forma de caixa" }
+    ]
+  },
+  {
+    titulo: "Top 10 filmes segundo o IMDB",
+    subtitulo: "Boa sorte",
+    respostas: [
+      { posicao: 1, nome: "Um sonho de liberdade", variantes: ["The Shawshank Redemption", "Shawshank Redemption", "Sonho de liberdade"], dica: "Prisão" },
+      { posicao: 2, nome: "O Poderoso Chefão", variantes: ["Poderoso Chefão", "Chefão", "Godfather", "The Godfather", "God Father"], dica: "Corleone" },
+      { posicao: 3, nome: "Batman: O Cavalheiro das Trevas", variantes: ["Batman", "Batman 2", "Batman cavalheiro das trevas"], dica: "Coringa" },
+      { posicao: 4, nome: "O Poderoso Chefão", variantes: ["O Poderoso Chefão Parte II", "O Poderoso Chefão Parte 2"], dica: "Corleone 2" },
+      { posicao: 5, nome: "A lista de Schindler", variantes: ["A lista de Schndler", "lista de Schindler", "A lista de Schidler"], dica: "Segunda guerra preto e branco" },
+      { posicao: 6, nome: "O Senhor dos Anéis: O Retorno do Rei", variantes: ["Senhor dos anéis o retorno do rei", "o Senhor dos anéis o retorno do rei", "Senhor dos anéis 3", "o Senhor dos anéis 3"], dica: "Anel 3" },
+      { posicao: 7, nome: "Pulp Fiction", variantes: ["Pup Fiction"], dica: "John Travolta e Sam L Jackson" },
+      { posicao: 8, nome: "12 Homens e uma Sentença", dica: "Impossivel acertar, tem haver com 12 homens e sentença", variantes: ["12 angry men"] },
+      { posicao: 9, nome: "O Senhor dos Anéis: A Sociedade do Anel", variantes: ["O Senhor dos Anéis A Sociedade do Anel", "Senhor dos Anéis: A Sociedade do Anel", "O Senhor dos Anéis 1", "o Senhor do aneis", "senhor dos aneis"] },
+      { posicao: 10, nome: "Forrest Gump", variantes: ["Forest gump"], dica: "Tom Hanks correndo" }
+    ]
+  },
+  {
+    titulo: "Top 10 Aplicativos Mais Baixados da Play Store",
+    subtitulo: "Até 2025",
+    respostas: [
+      { posicao: 1, nome: "WhatsApp", variantes: ["WhatsApp Messenger", "Zap"], dica: "Principal app" },
+      { posicao: 2, nome: "Facebook", variantes: ["Facebook"], dica: "Rede social" },
+      { posicao: 3, nome: "Instagram", variantes: ["Insta"], dica: "fotos" },
+      { posicao: 4, nome: "Messenger", variantes: ["Facebook Messenger"], dica: "App de mensagens" },
+      { posicao: 5, nome: "TikTok", variantes: ["Tiktok"], dica: "Vídeos" },
+      { posicao: 6, nome: "Subway Surfers", variantes: ["Subway Surf"], dica: "Jogo mobile clássico" },
+      { posicao: 7, nome: "YouTube", variantes: ["Youtube"], dica: "Tela" },
+      { posicao: 8, nome: "Google Maps", variantes: ["Maps"], dica: "Navegação e mapas" },
+      { posicao: 9, nome: "Gmail", variantes: ["Gmail"], dica: "Google pomba" },
+      { posicao: 10, nome: "Google Chrome", variantes: ["Chrome"], dica: "Navegador mais usado" }
+    ]
+  },
+  {
+    titulo: "Top 10 Línguas Mais Faladas no Mundo",
+    subtitulo: "Línguas globais",
+    respostas: [
+      { posicao: 1, nome: "Inglês", variantes: ["English"], dica: "Língua internacional" },
+      { posicao: 2, nome: "Chinês Mandarim", variantes: ["Mandarim", "Chines"], dica: "Mais falada como nativa" },
+      { posicao: 3, nome: "Hindi", variantes: ["Hindi"], dica: "Falado na Índia" },
+      { posicao: 4, nome: "Espanhol", variantes: ["Espanhol", "Spanish"], dica: "Muito presente na América Latina" },
+      { posicao: 5, nome: "Francês", variantes: ["Frances"], dica: "Falado em vários continentes" },
+      { posicao: 6, nome: "Árabe", variantes: ["Arabe"], dica: "Região do Oriente Médio" },
+      { posicao: 7, nome: "Bengali", variantes: ["Bangla"], dica: "Falado em Bangladesh" },
+      { posicao: 8, nome: "Português", variantes: ["Portugues"], dica: "Brasil e Portugal" },
+      { posicao: 9, nome: "Russo", variantes: ["Russo"], dica: "Leste europeu" },
+      { posicao: 10, nome: "Urdu", variantes: ["Urdu"], dica: "Relacionado ao hindi" }
+    ]
+  },
+  {
+    titulo: "Países com mais medalhas nas Olímpiadas de Verão",
+    subtitulo: "Até 2024",
+    respostas: [
+      { posicao: 1, nome: "Estados Unidos", variantes: ["Estados Unidos da América", "USA", "EUA"], dica: "Águia" },
+      { posicao: 2, nome: "União Soviética", variantes: ["Rússia", "URSS"], dica: "Lenin" },
+      { posicao: 3, nome: "Reino Unido", variantes: ["Inglaterra", "Grã Bretanha"], dica: "Escócia" },
+      { posicao: 4, nome: "França", variantes: [], dica: "Última olimpiada" },
+      { posicao: 5, nome: "China", dica: "Republica poúlar" },
+      { posicao: 6, nome: "Itália", variantes: [], dica: "Gianluigi" },
+      { posicao: 7, nome: "Alemanha", dica: "Oriental ou ocidental?" },
+      { posicao: 8, nome: "Austrália", variantes: ["Australia"], dica: "Margot Robbie" },
+      { posicao: 9, nome: "Japão", dica: "Pão" },
+      { posicao: 10, nome: "Hungria", dica: "Fome in ingles" }
+    ]
   }
 ];
 
